@@ -5,6 +5,7 @@ public class Position {
 	double pWage;
 	boolean pFilledStatus;
 	String pType;
+	int pID;
 
 	public Position(double wage, boolean filledStatus, String type) {
 		pWage = wage;
@@ -34,5 +35,13 @@ public class Position {
 
 	public void setType(String type) {
 		type = pType;
+	}
+	
+	public void setID(int ID) {
+		pID = ID;
+	}
+	
+	public int getID() {
+		return pID;
 	}
 }

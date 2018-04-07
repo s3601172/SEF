@@ -1,19 +1,20 @@
 package hr.staff;
-
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 
-public class Admin {
+public class Admin extends Staff {
 	
 	private List<Staff> staff;
 	private List<Staff> approvedStaff; // subset of all staff members
 	private List<Position> positions;
 	
-	public Admin() {
+	public Admin(String ID, String username, String password, String phone, String firstName, String lastName, String email,  boolean[] availability) {
+		super(ID, username, password, phone, firstName, lastName, email, availability);
+		/*
 		staff = new ArrayList<Staff>();
 		approvedStaff = new ArrayList<Staff>();
 		positions = new ArrayList<Position>();
+		*/
 	}
 	
 	/*
@@ -52,7 +53,7 @@ public class Admin {
 	 */
 	public Position removePosition(int positionId) {
 		for (Position p : positions) {
-			if (p.getPositionId() == positionId) {
+			if (p.getID() == positionId) {
 				Position tmp = p;
 				positions.remove(p);
 				return tmp;

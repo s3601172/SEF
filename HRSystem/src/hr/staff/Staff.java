@@ -2,8 +2,8 @@ package hr.staff;
 
 public class Staff {
 
-	int sID;
-	int sPhone;
+	String sID;
+	String sPhone;
 	String sFirstName;
 	String sLastName;
 	String sEmail;
@@ -11,77 +11,79 @@ public class Staff {
 	String sPassword;
 	boolean[] sAvailability;
 
-	public Staff(int ID, int phone, String sFirstName, String sLastName, String email, String username, String password, boolean[] availability) {
+	public Staff(String ID, String username, String password, String phone, String firstName, String lastName, String email,  boolean[] availability) {
 		sID = ID;
 		sPhone = phone;
 		sEmail = email;
 		sUsername = username;
 		sPassword = password;
+		sFirstName = firstName;
+		sLastName = lastName;
 		//array
 	}
 
-	public int getID() {
+	public String getID() {
 		return this.sID;
 	}
 
-	public void setID(int ID) {
-		ID = this.sID;
+	public void setID(String ID) {
+		sID = ID;
 	}
 
-	public int getPhone() {
-		return this.sPhone;
+	public String getPhone() {
+		return sPhone;
 	}
 
-	public void setPhone(int phone) {
-		phone = this.sPhone;
+	public void setPhone(String phone) {
+		sPhone = phone;
 	}
 
 	public String getFirstName() {
-		return this.sFirstName;
+		return sFirstName;
 	}
 	
 	public void setFirstName(String firstName) {
-		firstName = sFirstName;
+		sFirstName = firstName;
 	}
 	
 	public String getLastName() {
-		return this.sLastName;
+		return sLastName;
 	}
 	
 	public void setLastName(String lastName) {
-		lastName = sLastName;
+		sLastName = lastName;
 	}
 	
 	public String getEmail() {
-		return this.sEmail;
+		return sEmail;
 	}
 
 	public void setEmail(String email) {
-		email = this.sEmail;
+		sEmail = email;
 	}
 
 	public String getUsername() {
-		return this.sUsername;
+		return sUsername;
 	}
 
 	public void setUsername(String username) {
-		username = this.sUsername;
+		sUsername = username;
 	}
 
 	public String getPassword() {
-		return this.sPassword;
+		return sPassword;
 	}
 
 	public void setPassword(String password) {
-		password = this.sPassword;
+		sPassword = password;
 	}
 	
 	public boolean[] getAvailability() {
-		return this.sAvailability;
+		return sAvailability;
 	}
 	
 	public void setAvailability(boolean[] availability) {
-		availability = sAvailability;
+		sAvailability = availability;
 	}
 	
 }
