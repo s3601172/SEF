@@ -23,10 +23,10 @@ public class Admin {
 	 * @param loginDetails
 	 * @return true if approval was successful, otherwise false
 	 */
-	public boolean approveStaffRequest(String name, String loginDetails) {
+	public boolean approveStaffRequest(String firstName, String lastName, String username, String password) {
 		// While approving staff, make sure the name and loginDetails match.
 		for (Staff s : staff) {
-			if (s.getName().equals(name) && s.getLoginDetails().equals(loginDetails)) {
+			if (s.getFirstName().equals(firstName) && s.getLastName().equals(lastName) && s.getUsername().equals(username) && s.getPassword().equals(password)) {
 				approvedStaff.add(s);
 				return true;
 			}

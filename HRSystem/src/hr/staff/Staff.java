@@ -4,12 +4,14 @@ public class Staff {
 
 	int sID;
 	int sPhone;
+	String sFirstName;
+	String sLastName;
 	String sEmail;
 	String sUsername;
 	String sPassword;
 	boolean[] sAvailability;
 
-	public Staff(int ID, int phone, String email, String username, String password, boolean[] availability) {
+	public Staff(int ID, int phone, String sFirstName, String sLastName, String email, String username, String password, boolean[] availability) {
 		sID = ID;
 		sPhone = phone;
 		sEmail = email;
@@ -34,6 +36,22 @@ public class Staff {
 		phone = this.sPhone;
 	}
 
+	public String getFirstName() {
+		return this.sFirstName;
+	}
+	
+	public void setFirstName(String firstName) {
+		firstName = sFirstName;
+	}
+	
+	public String getLastName() {
+		return this.sLastName;
+	}
+	
+	public void setLastName(String lastName) {
+		lastName = sLastName;
+	}
+	
 	public String getEmail() {
 		return this.sEmail;
 	}
