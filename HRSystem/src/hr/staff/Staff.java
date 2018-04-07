@@ -75,5 +75,13 @@ public class Staff {
 	public void setPassword(String password) {
 		password = this.sPassword;
 	}
-	//not sure how to do getters and setters for the availability
+	
+	public boolean[] getAvailability() {
+		return this.sAvailability;
+	}
+	
+	public void setAvailability(boolean[] availability) {
+		availability = sAvailability;
+	}
+	
 }
