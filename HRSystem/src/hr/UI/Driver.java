@@ -5,6 +5,8 @@ import hr.staff.*;
 
 public class Driver {
     private static final String USER_DATA_FILE = "UserData.txt";
+    private static final int DAYS_IN_WEEK = 7;
+    private static final int HOURS_IN_DAY = 24;
 
     private static Staff currentUser;
 	
@@ -36,14 +38,14 @@ public class Driver {
 			System.out.println("HR System");
 			System.out.println("-----------------------------------\n");
 
-			System.out.println("1. View/Edit personal info.\n");
-			System.out.println("2. View current applications.\n");
-			System.out.println("3. View/Apply for available positions.\n");
-			System.out.println("4. View timetable.\n");
-			System.out.println("5. Edit time availabiliy.\n");
-			System.out.println("6. Logout.\n");
+			System.out.println("1. View/Edit personal info.");
+			System.out.println("2. View current applications.");
+			System.out.println("3. View/Apply for available positions.");
+			System.out.println("4. View timetable.");
+			System.out.println("5. View/Edit time availabiliy.");
+			System.out.println("\n6. Logout.\n");
 			
-			prompt = "Please select an action: ";
+			prompt = "Please enter an option (1-6): ";
 			command = getCommand(prompt, 1, 6);
 			
 			if(command == 1) {
@@ -58,9 +60,10 @@ public class Driver {
 					System.out.println("4. Last Name:\t" + currentUser.getLastName());
 					System.out.println("5. Phone #:\t" + currentUser.getPhone());
 					System.out.println("6. Email:\t" + currentUser.getEmail());
+					System.out.println("\n7. Return to main menu");
 					System.out.println();
 					
-					prompt = "Select a value to edit or select 7 to return to the main menu: ";	
+					prompt = "Enter a value to edit (1-7): ";	
 					command = getCommand(prompt, 1, 7);
 	    			
 					if(command == 7) {
@@ -76,7 +79,27 @@ public class Driver {
 			} else if (command == 4) {
 				System.out.println("Under construction... (Requires Roster + Classes)\n");
 			} else if(command == 5) {
-				
+				// Run the availability program
+				while(taskStatus) {
+					System.out.println("Availability");
+					System.out.println("-----------------------------------\n");
+
+					System.out.println("1. View current availability");
+					System.out.println("2. Edit availability");
+					System.out.println("\n3. Return to main menu");
+					System.out.println();
+					
+					prompt = "Enter an option (1-3): ";	
+					command = getCommand(prompt, 1, 3);
+	    			
+					if(command == 3) {
+						taskStatus = false;
+					} else if(command == 2){
+						editAvailability(command, currentUser.getAvailability());
+					} else {
+						printAvailability(currentUser.getAvailability());
+					}
+				}
 			} else if (command == 6) {
 				return false;
 			}
@@ -112,6 +135,7 @@ public class Driver {
     private static void writeStaffData() {
         String ID, phone, email, username, password;
         String firstName, lastName;
+        boolean[][] availability = new boolean[DAYS_IN_WEEK][HOURS_IN_DAY * 4];
         String staffType;
     	Scanner inputFile = null;
         PrintWriter outputFile = null;
@@ -136,8 +160,18 @@ public class Driver {
         	phone = inputFile.nextLine();
         	firstName = inputFile.nextLine();
         	lastName = inputFile.nextLine();
+            for(int i = 0; i < DAYS_IN_WEEK; i++) {
+        		for(int j = 0; j < HOURS_IN_DAY * 4; j++) {
+        			if(inputFile.nextInt() == 0) {
+        				availability[i][j] = false;
+        			} else {
+        				availability[i][j] = true;
+        			}
+        		}
+        	}
         	inputFile.nextLine();
 
+        	// Ensure it's not the current user's data
         	if(!ID.equals(currentUser.getID())) {
         		// Write out data to temporary file
         		outputFile.println(staffType);
@@ -148,6 +182,16 @@ public class Driver {
         		outputFile.println(phone);
         		outputFile.println(firstName);
         		outputFile.println(lastName);
+        		for(int i = 0; i < DAYS_IN_WEEK; i++) {
+            		for(int j = 0; j < HOURS_IN_DAY * 4; j++) {
+            			if(availability[i][j]) {
+            				outputFile.print(1 + " ");
+            			} else {
+            				outputFile.print(0 + " ");
+            			}
+            		}
+            		outputFile.println();
+            	}
         		outputFile.println();
         	}
         }
@@ -155,6 +199,7 @@ public class Driver {
         inputFile.close();
 
         // Writes out new current user's data
+        availability = currentUser.getAvailability();
         if(currentUser instanceof Admin) {
     		outputFile.println("admin");	
     	} else if(currentUser instanceof CourseCoordinator) {
@@ -169,7 +214,17 @@ public class Driver {
         outputFile.println(currentUser.getPhone());
         outputFile.println(currentUser.getFirstName());
         outputFile.println(currentUser.getLastName());
-        outputFile.println();
+        for(int i = 0; i < DAYS_IN_WEEK; i++) {
+    		for(int j = 0; j < HOURS_IN_DAY * 4; j++) {
+    			if(availability[i][j]) {
+    				outputFile.print(1 + " ");
+    			} else {
+    				outputFile.print(0 + " ");
+    			}
+    		}
+    		outputFile.println();
+    	}
+        //outputFile.println();
         
         outputFile.close();
         
@@ -186,7 +241,7 @@ public class Driver {
         String ID, phone, email, username, password;
         String firstName, lastName;
         String staffType;
-        boolean[] temp = new boolean[0];
+        boolean[][] availability = new boolean[DAYS_IN_WEEK][HOURS_IN_DAY * 4];
         Scanner userData = null;
 
         // Open the user data file
@@ -208,18 +263,26 @@ public class Driver {
             phone = userData.nextLine();
             firstName = userData.nextLine();
             lastName = userData.nextLine();
+            for(int i = 0; i < DAYS_IN_WEEK; i++) {
+        		for(int j = 0; j < HOURS_IN_DAY * 4; j++) {
+        			if(userData.nextInt() == 0) {
+        				availability[i][j] = false;
+        			} else {
+        				availability[i][j] = true;
+        			}
+        		}
+        	}
             userData.nextLine();
           
             // Check if this is the user's data.
             if(username.equals(inputUser) && password.equals(inputPassword)) {
             	if(staffType.equals("staff")) {
-            		currentUser = new Staff(ID, username, password, phone, firstName, lastName, email, temp);	
+            		currentUser = new Staff(ID, username, password, phone, firstName, lastName, email, availability);	
             	} else if(staffType.equals("admin")) {
-            		currentUser = new Admin(ID, username, password, phone, firstName, lastName, email, temp);	
+            		currentUser = new Admin(ID, username, password, phone, firstName, lastName, email, availability);	
             	} else if(staffType.equals("courseco")) {
-            		currentUser = new CourseCoordinator(ID, username, password, phone, firstName, lastName, email, temp);
+            		currentUser = new CourseCoordinator(ID, username, password, phone, firstName, lastName, email, availability);
             	}
-            	currentUser = new Staff(ID, username, password, phone, firstName, lastName, email, temp);
             	userData.close();
             	return true;
             }
@@ -265,7 +328,6 @@ public class Driver {
     	System.out.println("Enter new value: ");
     	
     	if(command == 1) {
-    		
     		if(currentUser instanceof Admin) {
     			currentUser.setID(kb.next());
     		} else {
@@ -285,5 +347,106 @@ public class Driver {
 		}
     	
     	System.out.println("Value successfully changed.\n\n");
+    }
+    
+    private static void editAvailability(int command, boolean[][] availability) {
+    	Scanner kb = new Scanner(System.in);
+    	String prompt;
+    	int day, startTime, endTime;
+    	int startTimePosition, endTimePosition;
+    	boolean setAvailable;
+    	
+    	while(true) {
+			System.out.println("Availability Editor");
+			System.out.println("-----------------------------------\n");
+
+			System.out.println("1. Set available");
+			System.out.println("2. Set unavailable");
+			System.out.println("\n3. Return");
+			System.out.println();
+			
+			prompt = "Enter an option (1-3): ";	
+			command = getCommand(prompt, 1, 3);
+			
+			if(command == 3) {
+				return;
+			} else {
+				if(command == 1) {
+					setAvailable = true;
+				} else {
+					setAvailable = false;
+				}
+				prompt = "What day of the week (1-7)? ";
+				day = getCommand(prompt, 1, 7);
+				prompt = "What starting time(e.g. 1830 = 6:30pm)? ";
+				startTime = getTime(prompt);
+				prompt = "What ending time(e.g. 1830 = 6:30pm)? ";
+				endTime = getTime(prompt);
+				if(startTime >= endTime) {
+					System.out.println("Invalid period of time.");
+				} else {
+					// Get position in availability matrix
+					startTimePosition = (startTime / 100) * 4 + (startTime % 100) / 15;
+					endTimePosition = (endTime / 100) * 4 + (endTime % 100) / 15;
+					for(int i = startTimePosition; i <= endTimePosition; i++) {
+						availability[day - 1][i] = setAvailable;
+					}
+				}
+			}
+		}
+    }
+    
+    private static void printAvailability(boolean[][] availability) {
+    	int startTime = -1, endTime = -1;
+    	
+    	System.out.println("Availability");
+		System.out.println("-----------------------------------\n");
+		System.out.println("(Days 1-7 represent Monday - Sunday. Times are in HHMM format.)\n");
+
+    	for(int i = 0; i < DAYS_IN_WEEK; i++) {
+    		System.out.print("Day " + (i + 1) + ":");
+    		for(int j = 0; j < HOURS_IN_DAY * 4; j++) {
+    			if(availability[i][j] == true) {
+    				if(startTime == -1) {
+    					startTime = (j/4)*100 + (j%4)*15;
+    				} else if(j == HOURS_IN_DAY * 4 && startTime != -1) {
+    					endTime = (j/4)*100 + (j%4)*15;
+        				System.out.print(" | " + formatTime(startTime) + " - " + formatTime(endTime));
+        				startTime = -1;
+    				}
+    			} else if(startTime != -1){
+    				endTime = (j/4)*100 + (j%4)*15;
+    				System.out.print(" | " + formatTime(startTime) + " - " + formatTime(endTime));
+    				startTime = -1;
+    			}
+    		}
+    		startTime = -1;
+    		System.out.println();
+    	}
+    	System.out.println();
+    }
+    
+    // Returns 24 hour time as a string with leading 0s
+    private static String formatTime(int time) {
+    	String result = Integer.toString(time);
+    	int timeLength = result.length();
+    	
+    	for(int i = 0; i < 4 - timeLength; i++) {
+    		result = "0" + result;
+    	}
+
+    	return result;
+    }
+    
+    private static int getTime(String prompt) {
+    	Scanner kb = new Scanner(System.in);
+    	int time = -1, hour = -1, minute = -1;
+
+		if(hour < 0 || hour > 23 || minute < 0 || minute > 59) {
+			time = getCommand(prompt, 0, 2359);
+			hour = (int)(time / 100);
+			minute = time % 100;
+		}
+    	return time;
     }
 }

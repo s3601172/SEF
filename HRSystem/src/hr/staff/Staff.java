@@ -9,9 +9,9 @@ public class Staff {
 	String sEmail;
 	String sUsername;
 	String sPassword;
-	boolean[] sAvailability;
+	boolean[][] sAvailability;
 
-	public Staff(String ID, String username, String password, String phone, String firstName, String lastName, String email,  boolean[] availability) {
+	public Staff(String ID, String username, String password, String phone, String firstName, String lastName, String email,  boolean[][] availability) {
 		sID = ID;
 		sPhone = phone;
 		sEmail = email;
@@ -19,7 +19,7 @@ public class Staff {
 		sPassword = password;
 		sFirstName = firstName;
 		sLastName = lastName;
-		//array
+		sAvailability = availability;
 	}
 
 	public String getID() {
@@ -78,11 +78,11 @@ public class Staff {
 		sPassword = password;
 	}
 	
-	public boolean[] getAvailability() {
+	public boolean[][] getAvailability() {
 		return sAvailability;
 	}
 	
-	public void setAvailability(boolean[] availability) {
+	public void setAvailability(boolean[][] availability) {
 		sAvailability = availability;
 	}
 	

@@ -8,7 +8,7 @@ public class Admin extends Staff {
 	private List<Staff> approvedStaff; // subset of all staff members
 	private List<Position> positions;
 	
-	public Admin(String ID, String username, String password, String phone, String firstName, String lastName, String email,  boolean[] availability) {
+	public Admin(String ID, String username, String password, String phone, String firstName, String lastName, String email,  boolean[][] availability) {
 		super(ID, username, password, phone, firstName, lastName, email, availability);
 		/*
 		staff = new ArrayList<Staff>();
