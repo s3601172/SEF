@@ -1,16 +1,26 @@
 package hr.staff;
 
+import java.util.*;
+import hr.school.*;
+import hr.staff.*;
+
 public class Position {
 
 	double pWage;
 	boolean pFilledStatus;
 	String pType;
-	int pID;
+	String pID;
 
-	public Position(double wage, boolean filledStatus, String type) {
+	Course course;
+	ArrayList<PositionClass> classes = new ArrayList<PositionClass>();
+	ArrayList<PositionApplication> applications = new ArrayList<PositionApplication>();
+
+	public Position(String pID, String type, Course course, boolean filledStatus, double wage) {
+		this.pID = pID;
 		pWage = wage;
 		pFilledStatus = filledStatus;
 		pType = type;
+		this.course = course;
 	}
 
 	public double getWage() {
@@ -37,11 +47,35 @@ public class Position {
 		type = pType;
 	}
 	
-	public void setID(int ID) {
+	public void setID(String ID) {
 		pID = ID;
 	}
 	
-	public int getID() {
+	public String getID() {
 		return pID;
+	}
+
+	public ArrayList<PositionClass> getClasses() {
+		return classes;
+	}
+
+	public void setClasses(ArrayList<PositionClass> classes) {
+		this.classes = classes;
+	}
+
+	public ArrayList<PositionApplication> getApplications() {
+		return applications;
+	}
+
+	public void setApplications(ArrayList<PositionApplication> applications) {
+		this.applications = applications;
+	}
+
+	public void setCourse(Course course) {
+		this.course = course;
+	}
+
+	public Course getCourse() {
+		return course;
 	}
 }

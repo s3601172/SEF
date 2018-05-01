@@ -51,6 +51,7 @@ public class Admin extends Staff {
 	 * @param positionId
 	 * @return
 	 */
+	/*
 	public Position removePosition(int positionId) {
 		for (Position p : positions) {
 			if (p.getID() == positionId) {
@@ -61,5 +62,6 @@ public class Admin extends Staff {
 		}
 		return null;
 	}
+	*/
 
 }

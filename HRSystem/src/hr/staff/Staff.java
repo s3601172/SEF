@@ -1,5 +1,8 @@
 package hr.staff;
 
+import java.util.*;
+import hr.staff.*;
+
 public class Staff {
 
 	String sID;
@@ -10,9 +13,10 @@ public class Staff {
 	String sUsername;
 	String sPassword;
 	boolean[][] sAvailability;
+	ArrayList<PositionApplication> applications = new ArrayList<PositionApplication>();
 
-	public Staff(String ID, String username, String password, String phone, String firstName, String lastName, String email,  boolean[][] availability) {
-		sID = ID;
+	public Staff(String sID, String username, String password, String phone, String firstName, String lastName, String email,  boolean[][] availability) {
+		this.sID = sID;
 		sPhone = phone;
 		sEmail = email;
 		sUsername = username;
@@ -85,5 +89,12 @@ public class Staff {
 	public void setAvailability(boolean[][] availability) {
 		sAvailability = availability;
 	}
+
+	public ArrayList<PositionApplication> getApplications() {
+		return applications;
+	}
 	
+	public void setApplications(ArrayList<PositionApplication> applications) {
+		this.applications = applications;
+	}	
 }
