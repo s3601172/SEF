@@ -1,5 +1,6 @@
 package hr.UI;
 import java.util.*;
+
 import hr.staff.*;
 import hr.data.*;
 import hr.school.*;
@@ -39,7 +40,7 @@ public class Driver {
             FileHandler.readCourseData(courseData, staffData);
             FileHandler.readPositionData(positionData, courseData);
             FileHandler.readApplicationData(applicationData, positionData, staffData);
-            FileHandler.readClassData(classData, positionData)      ;
+            FileHandler.readClassData(classData, positionData);
             FileHandler.readPositionRequestData(positionRequests, staffData);
 
             login();
@@ -63,6 +64,9 @@ public class Driver {
         boolean taskStatus;
         String prompt;
 
+        // Should be done once till user logs out
+        currentUser.getApplications().addAll(applicationData);
+        
         while(true) {
             taskStatus = true;
             
@@ -125,6 +129,7 @@ public class Driver {
                     }
                 }
             } else if (command == 2) {
+            	
                 // Display all the applications of the current staff member
                 while(taskStatus) {
                     System.out.println("Current Applications");
@@ -149,17 +154,18 @@ public class Driver {
                 }
             } else if (command == 3) {
                 // Display all available positions
+            	
+            	// Fetch all available positions only once
+                availablePositions = new ArrayList<Position>();
+                for(int i = 0; i < positionData.size(); i++) {
+                    if(!positionData.get(i).isFilled()) {
+                        availablePositions.add(positionData.get(i));
+                    }
+                }
+            	
                 while(taskStatus) {
                     System.out.println("Available Positions");
-                    System.out.println("-----------------------------------\n");
-
-                    // Find all available positions
-                    availablePositions = new ArrayList<Position>();
-                    for(int i = 0; i < positionData.size(); i++) {
-                        if(!positionData.get(i).isFilled()) {
-                            availablePositions.add(positionData.get(i));
-                        }
-                    }
+                    System.out.println("-----------------------------------\n");                    
 
                     // Display all available positions
                     for(int i = 0; i < availablePositions.size(); i++) {
@@ -178,7 +184,7 @@ public class Driver {
                     if(subCommand == 0) {
                         taskStatus = false;
                     } else if(subCommand <= availablePositions.size()){
-                        submitApplication();
+                        applyForAvailablePosition(availablePositions.get(subCommand - 1));
                     }
                 }
             } else if (command == 4) {
@@ -570,7 +576,28 @@ public class Driver {
         System.out.println("To be implemented...");
     }
 
-    private static void submitApplication() {
-        System.out.println("To be implemented...");
+    private static void applyForAvailablePosition(Position position) {
+        
+        CourseCoordinator courseCoordinator = null;
+        for (Staff s : staffData) {
+        	if (s instanceof CourseCoordinator) {
+        		courseCoordinator = (CourseCoordinator) s;
+        		break;
+        	}
+        }
+        
+        //PositionRequest positionRequest = new PositionRequest(position.getCourse().getCourseCode(), 
+        //		position.getType(), position.getWage(), courseCoordinator, "Pending");
+        
+        PositionApplication positionApplication = new PositionApplication("05/05/2018", "Pending", currentUser, position);
+        
+        //courseCoordinator.addPositionRequest(positionRequest);
+        
+        courseCoordinator.getApplications().add(positionApplication);
+        applicationData.add(positionApplication);
+        
+        availablePositions.remove(position);
+        
+        System.out.println("Applied, awaiting approval from Course coordinator.\n");
     }
 }
