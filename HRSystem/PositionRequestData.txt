@@ -1,18 +1,35 @@
+COSC1234-39481
 COSC1234
 000001
 tutor
 Approved
 25.0
 
+COSC1235-65435
 COSC1235
 000001
 demonstrator
-Declined
+Denied
 40.0
 
+COSC1236-4607
 COSC1236
 000001
 lecturer
 Pending
-60.0
+50.0
+
+COSC1234-18775
+COSC1234
+000001
+demonstrator
+Denied
+30.5
+
+COSC1236-42649
+COSC1236
+000001
+head tutor
+Approved
+45.0
 

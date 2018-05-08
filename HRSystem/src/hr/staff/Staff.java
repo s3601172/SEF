@@ -1,7 +1,6 @@
 package hr.staff;
 
 import java.util.*;
-import hr.staff.*;
 
 public class Staff {
 

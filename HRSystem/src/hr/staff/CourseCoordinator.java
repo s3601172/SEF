@@ -6,6 +6,7 @@ import hr.school.*;
 public class CourseCoordinator extends Staff {
 	private ArrayList<Course> courses = new ArrayList<Course>();
 	private ArrayList<PositionRequest> positionRequests = new ArrayList<PositionRequest>();
+	private ArrayList<ApplicationApprovalRequest> applicationApprovalRequests = new ArrayList<ApplicationApprovalRequest>();
 	
 	public CourseCoordinator(String ID, String username, String password, String phone, String firstName, String lastName, String email,  boolean[][] availability) {
 		super(ID, username, password, phone, firstName, lastName, email, availability);
@@ -25,5 +26,13 @@ public class CourseCoordinator extends Staff {
 	
 	public void setPositionRequests(ArrayList<PositionRequest> positionRequests) {
 		this.positionRequests = positionRequests;
+	}
+
+	public ArrayList<ApplicationApprovalRequest> getApplicationApprovalRequests() {
+		return applicationApprovalRequests;
+	}
+	
+	public void setApplicationApprovalRequests(ArrayList<ApplicationApprovalRequest> applicationApprovalRequests) {
+		this.applicationApprovalRequests = applicationApprovalRequests;
 	}
 }

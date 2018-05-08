@@ -16,3 +16,21 @@ COSC1235
 false
 20.0
 
+COSC1236-4607
+lecturer
+COSC1236
+false
+50.0
+
+COSC1235-87813
+tutor
+COSC1235
+false
+22.0
+
+COSC1236-42649
+head tutor
+COSC1236
+false
+45.0
+

@@ -2,7 +2,6 @@ package hr.staff;
 
 import java.util.*;
 import hr.school.*;
-import hr.staff.*;
 
 public class Position {
 
@@ -24,27 +23,27 @@ public class Position {
 	}
 
 	public double getWage() {
-		return this.pWage;
+		return pWage;
 	}
 
 	public void setWage(double wage) {
-		wage = this.pWage;
+		pWage = wage;
 	}
 
 	public boolean isFilled() {
-		return this.pFilledStatus;
+		return pFilledStatus;
 	}
 
 	public void setFilled(boolean filledStatus) {
-		filledStatus = this.pFilledStatus;
+		pFilledStatus = filledStatus;
 	}
 
 	public String getType() {
-		return this.pType;
+		return pType;
 	}
 
 	public void setType(String type) {
-		type = pType;
+		pType = type;
 	}
 	
 	public void setID(String ID) {

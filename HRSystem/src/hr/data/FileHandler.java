@@ -13,6 +13,7 @@ public class FileHandler {
 	private static final String POSITION_APPLICATION_DATA_FILE = "PositionApplicationData.txt";
 	private static final String CLASS_DATA_FILE = "ClassData.txt";
     private static final String POSITION_REQUEST_DATA_FILE = "PositionRequestData.txt";
+    private static final String APPLICATION_APPROVAL_REQUEST_DATA_FILE = "ApplicationApprovalRequestData.txt";
 	public static final int DAYS_IN_WEEK = 7;
     public static final int HOURS_IN_DAY = 24;
 	
@@ -287,10 +288,12 @@ public class FileHandler {
         
         // Writes out position application data
         for(int i = 0; i < applicationData.size(); i++) {
+            outputFile.println(applicationData.get(i).getApplicationID());
             outputFile.println(applicationData.get(i).getPosition().getID());
             outputFile.println(applicationData.get(i).getStaff().getID());
             outputFile.println(applicationData.get(i).getDateSubmitted());
             outputFile.println(applicationData.get(i).getApprovalStatus());
+            outputFile.println(applicationData.get(i).getOfferStatus());
             
             outputFile.println();
         }
@@ -309,6 +312,8 @@ public class FileHandler {
     public static void readApplicationData(ArrayList<PositionApplication> applicationData, ArrayList<Position> positionData, ArrayList<Staff> staffData) {
         String dateSubmitted;
         String approvalStatus;
+        String offerStatus;
+        String applicationID;
         Staff staff = null;
         String staffID;
         Position position = null;
@@ -327,10 +332,12 @@ public class FileHandler {
 
         // Keep reading in position application data until end of file
         while(applicationInput.hasNextLine()) {
+            applicationID = applicationInput.nextLine();
             positionID = applicationInput.nextLine();
             staffID = applicationInput.nextLine();
             dateSubmitted = applicationInput.nextLine();
             approvalStatus = applicationInput.nextLine();
+            offerStatus = applicationInput.nextLine();
 
             applicationInput.nextLine();
             
@@ -350,7 +357,7 @@ public class FileHandler {
                 }
             }
 
-            application = new PositionApplication(dateSubmitted, approvalStatus, staff, position);
+            application = new PositionApplication(applicationID, dateSubmitted, approvalStatus, offerStatus, staff, position);
             
             // Add read in position applications to the Arraylists in the driver, position, and staff classes
             position.getApplications().add(application);
@@ -400,7 +407,7 @@ public class FileHandler {
     public static void readClassData(ArrayList<PositionClass> classData, ArrayList<Position> positionData) {
         int startTime, endTime;
         String location, pID;
-        int[] repeats = new int[DAYS_IN_WEEK];
+        int[] repeats;
         Position position = null;
         Scanner classInput = null;
         PositionClass positionClass;
@@ -421,6 +428,7 @@ public class FileHandler {
             startTime = classInput.nextInt();
             endTime = classInput.nextInt();
 
+            repeats = new int[DAYS_IN_WEEK];
             for(int i = 0; i < DAYS_IN_WEEK; i++) {
                 repeats[i] = classInput.nextInt();
             }
@@ -447,7 +455,7 @@ public class FileHandler {
     }
 
     public static void readPositionRequestData(ArrayList<PositionRequest> positionRequestData, ArrayList<Staff> staffData) {
-        String courseCode, type, approvalStatus;
+        String id, courseCode, type, approvalStatus;
         double wage;
         String coordinatorID;
         CourseCoordinator coordinator = null;
@@ -465,6 +473,7 @@ public class FileHandler {
 
         // Keep reading in requests data until end of file
         while(positionRequestInput.hasNextLine()) {
+            id = positionRequestInput.nextLine();
             courseCode = positionRequestInput.nextLine();
             coordinatorID = positionRequestInput.nextLine();
             type = positionRequestInput.nextLine();
@@ -481,7 +490,7 @@ public class FileHandler {
                     break;
                 }
             }
-            positionRequest = new PositionRequest(courseCode, type, wage, coordinator, approvalStatus);
+            positionRequest = new PositionRequest(id, courseCode, type, wage, coordinator, approvalStatus);
             
             // Add read in request to the driver and coordinator ArrayLists
             positionRequestData.add(positionRequest);
@@ -504,6 +513,7 @@ public class FileHandler {
         
         // Writes out position requests data
         for(int i = 0; i < positionRequestData.size(); i++) {
+            outputFile.println(positionRequestData.get(i).getID());
             outputFile.println(positionRequestData.get(i).getCourseCode());
             outputFile.println(positionRequestData.get(i).getCoordinator().getID());
             outputFile.println(positionRequestData.get(i).getType());
@@ -518,6 +528,80 @@ public class FileHandler {
         // Remove old data file and rename the temporary file
         File original = new File(POSITION_REQUEST_DATA_FILE);
         File updated = new File(POSITION_REQUEST_DATA_FILE + "_temp");
+        if(original.exists()) {
+            original.delete();
+        }
+        updated.renameTo(original);
+    }   
+
+    public static void readApplicationApprovalRequestData(ArrayList<ApplicationApprovalRequest> applicationApprovalRequestData, ArrayList<Staff> staffData) {
+        String positionID, applicationID, approvalStatus;
+        String coordinatorID;
+        CourseCoordinator coordinator = null;
+        Scanner applicationApprovalRequestInput = null;
+        ApplicationApprovalRequest applicationApprovalRequest;
+
+        // Open the position requests data file
+        try {
+            applicationApprovalRequestInput = new Scanner(new FileInputStream(APPLICATION_APPROVAL_REQUEST_DATA_FILE));
+        }
+        catch (Exception e) {
+            System.out.println("Could not open " + APPLICATION_APPROVAL_REQUEST_DATA_FILE);
+            System.exit(0);
+        }
+
+        // Keep reading in requests data until end of file
+        while(applicationApprovalRequestInput.hasNextLine()) {
+            positionID = applicationApprovalRequestInput.nextLine();
+            applicationID = applicationApprovalRequestInput.nextLine();
+            approvalStatus = applicationApprovalRequestInput.nextLine();
+            coordinatorID = applicationApprovalRequestInput.nextLine();
+
+            applicationApprovalRequestInput.nextLine();
+            
+            // Find course coordinator
+            for(int i = 0; i < staffData.size(); i++) {
+                if(staffData.get(i).getID().equals(coordinatorID)) {
+                    coordinator = (CourseCoordinator) staffData.get(i);
+                    break;
+                }
+            }
+            applicationApprovalRequest = new ApplicationApprovalRequest(positionID, applicationID, approvalStatus, coordinator);
+            
+            // Add read in request to the driver and coordinator ArrayLists
+            applicationApprovalRequestData.add(applicationApprovalRequest);
+            coordinator.getApplicationApprovalRequests().add(applicationApprovalRequest);
+        }
+        
+        applicationApprovalRequestInput.close();
+    }
+
+    public static void writeApplicationApprovalRequestData(ArrayList<ApplicationApprovalRequest> applicationApprovalRequestData) {
+        PrintWriter outputFile = null;
+        
+        // Open position requests data file and an temporary output file
+        try {
+            outputFile = new PrintWriter(new FileWriter(APPLICATION_APPROVAL_REQUEST_DATA_FILE + "_temp"));
+        }
+        catch (Exception e) {
+            System.exit(0);
+        }
+        
+        // Writes out application approval requests data
+        for(int i = 0; i < applicationApprovalRequestData.size(); i++) {
+            outputFile.println(applicationApprovalRequestData.get(i).getPositionID());
+            outputFile.println(applicationApprovalRequestData.get(i).getApplicationID());
+            outputFile.println(applicationApprovalRequestData.get(i).getApprovalStatus());
+            outputFile.println(applicationApprovalRequestData.get(i).getCoordinator().getID());
+            
+            outputFile.println();
+        }
+        
+        outputFile.close();
+        
+        // Remove old data file and rename the temporary file
+        File original = new File(APPLICATION_APPROVAL_REQUEST_DATA_FILE);
+        File updated = new File(APPLICATION_APPROVAL_REQUEST_DATA_FILE + "_temp");
         if(original.exists()) {
             original.delete();
         }
