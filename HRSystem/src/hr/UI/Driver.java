@@ -83,35 +83,38 @@ public class Driver {
             System.out.println("HR System");
             System.out.println("-----------------------------------\n");
 
-            System.out.println("1. View/Edit personal info.");
-            System.out.println("2. View current applications.");
-            System.out.println("3. View/Apply for available positions.");
-            System.out.println("4. View current classes.");
-            System.out.println("5. View/Edit time availability.");
+            System.out.println("1. View/Edit your personal info.");
+            System.out.println("2. View your current applications.");
+            System.out.println("3. View any offers for your current applications.");
+            System.out.println("4. View/Apply for available positions.");
+            System.out.println("5. View your current classes.");
+            System.out.println("6. View/Edit your time availability.");
             
             if(currentUser instanceof CourseCoordinator) {
-                System.out.println("\n6. Manage position requests.");
-                System.out.println("7. Manage staff applications to positions.");
-                System.out.println("8. Manage classes for courses");
+                System.out.println("\nCourse Coordinator Options");
+                System.out.println("\n7. Manage position requests.");
+                System.out.println("8. Manage staff applications to positions.");
+                System.out.println("9. Manage classes for courses");
             } else if(currentUser instanceof Admin) {
-                System.out.println("\n6. Manage requests for positions from Course Coordinators.");
-                System.out.println("7. Manage requests for staff application approvals from Course Coordinators.");
-                System.out.println("\n8. Manage positions for a course.");
-                System.out.println("9. Manage staff applications to positions.");
-                System.out.println("10. Manage classes for courses.");
+                System.out.println("\nAdministrator Options");
+                System.out.println("\n7. Manage requests for positions from Course Coordinators.");
+                System.out.println("8. Manage requests for staff application approvals from Course Coordinators.");
+                System.out.println("\n9. Manage positions for a course.");
+                System.out.println("10. Manage staff applications to positions.");
+                System.out.println("11. Manage classes for courses.");
             }
 
             System.out.println("\n0. Logout.\n");
             
             if(currentUser instanceof CourseCoordinator) {
-                prompt = "Please enter an option (0-8): ";
-                command = getCommand(prompt, 0, 8);
+                prompt = "Please enter an option (0-9): ";
+                command = getCommand(prompt, 0, 9);
             } else if (currentUser instanceof Admin) {
-                prompt = "Please enter an option (0-10): ";
-                command = getCommand(prompt, 0, 10);
+                prompt = "Please enter an option (0-11): ";
+                command = getCommand(prompt, 0, 11);
             } else {
-                prompt = "Please enter an option (0-5): ";
-                command = getCommand(prompt, 0, 5);
+                prompt = "Please enter an option (0-6): ";
+                command = getCommand(prompt, 0, 6);
             }
             
             // Run the chosen sub menu
@@ -120,31 +123,33 @@ public class Driver {
             } else if (command == 2) {
                 viewCurrentApplicationsMenu();
             } else if (command == 3) {
-                viewAvailablePositionsMenu();
+                viewOffersMenu();
             } else if (command == 4) {
+                viewAvailablePositionsMenu();
+            } else if (command == 5) {
                 viewCurrentClassesMenu();
-            } else if(command == 5) {
+            } else if(command == 6) {
                 viewAvailabilityMenu();
             } else if (command == 0) {
                 return false;
             } else if(currentUser instanceof CourseCoordinator) {
-            	if(command == 6) {
+            	if(command == 7) {
                     managePositionRequestsCO();
-                } else if(command == 7) {
-                    manageStaffApplicationsCO();
                 } else if(command == 8) {
+                    manageStaffApplicationsCO();
+                } else if(command == 9) {
                     manageClasses();
                 }
             } else if(currentUser instanceof Admin) {
-                if(command == 6) {
+                if(command == 7) {
                     managePositionRequests();
-                } else if(command == 7) {
-                    manageApplicationApprovalRequests();
                 } else if(command == 8) {
-                    managePositions();
+                    manageApplicationApprovalRequests();
                 } else if(command == 9) {
-                    manageStaffApplications();
+                    managePositions();
                 } else if(command == 10) {
+                    manageStaffApplications();
+                } else if(command == 11) {
                     manageClasses();
                 }
             }
@@ -229,7 +234,7 @@ public class Driver {
                 System.out.println("\n0. Return to main menu");
                 System.out.println();
                 
-                prompt = "Select an application to remove it (0-" + currentUser.getApplications().size() + ")";
+                prompt = "Select an option (0-" + currentUser.getApplications().size() + ")";
                 command = getCommand(prompt, 0, currentUser.getApplications().size());
                 
                 if(command == 0) {
@@ -243,6 +248,40 @@ public class Driver {
                 } else if(command == 2) {
                     editOffer(true);
                 } else if(command == 3) {
+                    editOffer(false);
+                }
+            }    
+        }
+    }
+
+    private static void viewOffersMenu()  {
+        int command;
+        String prompt;
+        while(selectOffer()) {
+            while(true) {
+                System.out.println("\nOffer Details");
+                System.out.println("-----------------------------------\n");
+                System.out.println("Application ID:\t" + currentApplication.getApplicationID());
+                System.out.println("Position ID:\t" + currentApplication.getPosition().getID());
+                System.out.println("Course Code:\t" + currentApplication.getPosition().getCourse().getCourseCode());
+                System.out.println("Type:\t" + currentApplication.getPosition().getType());
+                System.out.println("Date Submitted:\t" + currentApplication.getDateSubmitted());
+                System.out.println("Approval Status:\t" + currentApplication.getApprovalStatus());
+                System.out.println("Offer Status:\t" + currentApplication.getOfferStatus());
+
+                System.out.println("\n1. Accept an offer (if one has been given)");
+                System.out.println("2. Decline an offer (if one has been given)");
+                System.out.println("\n0. Return to main menu");
+                System.out.println();
+                
+                prompt = "Select an option (0-" + currentUser.getApplications().size() + ")";
+                command = getCommand(prompt, 0, currentUser.getApplications().size());
+                
+                if(command == 0) {
+                    return;
+                } else if(command == 1) {
+                    editOffer(true);
+                } else if(command == 2) {
                     editOffer(false);
                 }
             }    
@@ -513,6 +552,7 @@ public class Driver {
 
     private static void manageApplicationApprovalRequests()  {
         int command;
+        boolean[][] availability;
         String prompt;
         Position position;
 
@@ -529,25 +569,36 @@ public class Driver {
                 command = getCommand(prompt, 0, 2);
                 
                 if(command == 1) {
-                    // Set application approval request to approved
-                    currentApplicationApprovalRequest.setApprovalStatus("Approved");
-
                     // Find application associated with approval request
                     findApplication();
 
-                    // Set application to the position as offer sent
-                    currentApplication.setOfferStatus("Offer Received");
-
-                    // Find corresponsing position and set as filled
+                    // Find corresponsing position
                     setfill:for(int i = 0; i < currentCO.getCourses().size(); i++) {
                         for(int j = 0; j < currentCO.getCourses().get(i).getPositions().size(); j++) {
                             position = currentCO.getCourses().get(i).getPositions().get(j);
                             if(position.getID().equals(currentApplicationApprovalRequest.getPositionID())) {
+                                // Check if the classes of the position do not clash with staff's availability
+                                availability = currentApplication.getStaff().getAvailability();
+                                for(int k = 0; k < position.getClasses().size(); k++) {
+                                    currentClass = position.getClasses().get(k);
+                                    if(!checkClashes(availability)) {
+                                        return;
+                                    }
+                                }
+
+                                // Set position as filled
                                 position.setFilled(true);
                                 break setfill;
                             }
                         }
                     }
+
+                    // Set application approval request to approved
+                    currentApplicationApprovalRequest.setApprovalStatus("Approved");
+
+                    // Set application to the position as offer sent
+                    currentApplication.setOfferStatus("Offer Received");
+
                 } else if(command == 2) {
                     currentApplicationApprovalRequest.setApprovalStatus("Denied");
                 }    
@@ -602,7 +653,7 @@ public class Driver {
     // Course coordinator and Admin sub-menus--------------------------------------------------------------------------
 
     private static void manageClasses()  {
-        int command;
+        int command, day;
         String prompt;
 
         if((currentUser instanceof CourseCoordinator && COSelectCourse()) ||
@@ -689,6 +740,53 @@ public class Driver {
             return false;
         } else {
             currentApplication = currentUser.getApplications().get(command - 1);
+            return true;
+        }
+    }
+
+    private static boolean selectOffer() {
+        int command, numOffers = 0;
+        String prompt;
+
+        System.out.println("Current Offers");
+        System.out.println("-----------------------------------\n");
+
+        // List all the applications that the currentUser has that have an offer for them
+        for(int i = 0; i < currentUser.getApplications().size(); i++) {
+            currentApplication = currentUser.getApplications().get(i);
+            if(currentApplication.getOfferStatus().equals("Offer Received")) {
+                numOffers++;
+                System.out.println((numOffers) + ".");
+                System.out.println("Application ID:\t" + currentApplication.getApplicationID());
+                System.out.println("Position ID:\t" + currentApplication.getPosition().getID());
+                System.out.println("Course Code:\t" + currentApplication.getPosition().getCourse().getCourseCode());
+                System.out.println("Type:\t" + currentApplication.getPosition().getType());
+                System.out.println("Date Submitted:\t" + currentApplication.getDateSubmitted());
+                System.out.println("Approval Status:\t" + currentApplication.getApprovalStatus());
+                System.out.println("Offer Status:\t" + currentApplication.getOfferStatus());
+                System.out.println();
+            }
+        }
+
+        System.out.println("\n0. Return to main menu");
+        System.out.println();
+        
+        prompt = "Select an offer (0-" + numOffers + ")";
+        command = getCommand(prompt, 0, numOffers);
+        
+        if(command == 0) {
+            return false;
+        } else {
+            currentApplication = currentUser.getApplications().get(command - 1);
+            for(int i = 0; i < currentUser.getApplications().size(); i++) {
+                currentApplication = currentUser.getApplications().get(i);
+                if(currentApplication.getOfferStatus().equals("Offer Received")) {
+                    numOffers--;
+                    if(numOffers == 0) {
+                        break;
+                    } 
+                }
+            }
             return true;
         }
     }
@@ -1014,25 +1112,34 @@ public class Driver {
                 // Prompt for details of availability/unavailability
                 prompt = "What day of the week (1-7)? ";
                 day = getCommand(prompt, 1, 7);
-                prompt = "What starting time(e.g. 1830 = 6:30pm)? ";
-                startTime = getTime(prompt);
-                prompt = "What ending time(e.g. 1830 = 6:30pm)? ";
-                endTime = getTime(prompt);
-
-                if(startTime >= endTime) {
-                    System.out.println("Invalid period of time.");
+                
+                // Check that the day is valid
+                if(day < 1 || day > 7) {
+                	System.out.println("Invalid day!");
                 } else {
-                    // Get position in availability matrix
-                    startTimePosition = (startTime / 100) * 4 + (startTime % 100) / 15;
-                    endTimePosition = (endTime / 100) * 4 + (endTime % 100) / 15;
+                    prompt = "What starting time(e.g. 1830 = 6:30pm)? ";
+                    startTime = getTime(prompt);
+                    prompt = "What ending time(e.g. 1830 = 6:30pm)? ";
+                    endTime = getTime(prompt);
 
-                    // Set the chosen time as available/unavailable
-                    for(int i = startTimePosition; i <= endTimePosition; i++) {
-                        availability[day - 1][i] = setAvailable;
+                    if(startTime >= endTime) {
+                        System.out.println("Invalid period of time.");
+                    } else {
+                        // Get position in availability matrix
+                        startTimePosition = getTimeColumn(startTime);
+                        System.out.println("Received time column " + startTimePosition);
+                        endTimePosition = getTimeColumn(endTime);
+                        System.out.println("Received time column " + endTimePosition);
+                        System.out.println("Setting time as " + setAvailable);
+
+                        // Set the chosen time as available/unavailable
+                        for(int i = startTimePosition; i <= endTimePosition; i++) {
+                            availability[day - 1][i] = setAvailable;
+                        }
+
+                        // Print out updates availability table
+                        printAvailability(availability);
                     }
-
-                    // Print out updates availability table
-                    printAvailability(availability);
                 }
             }
         }
@@ -1161,7 +1268,7 @@ public class Driver {
         Scanner kb = new Scanner(System.in);
         StringTokenizer tokenizer;
         String location;
-        int startTime, endTime;
+        int startTime, endTime, day;
         int[] repeats;
         PositionClass newClass;
 
@@ -1187,7 +1294,12 @@ public class Driver {
 
         // Set all chosen days to repeat the class
         while (tokenizer.hasMoreTokens()) {
-            repeats[Integer.parseInt(tokenizer.nextToken()) - 1] = 1;
+            day = Integer.parseInt(tokenizer.nextToken()) - 1;
+            if(day >= 0 && day < 7) {
+                repeats[day] = 1;
+            } else {
+                System.out.println("Day " + (day + 1) + " is invalid, skipping...");
+            }
         }
 
         newClass = new PositionClass(currentPosition, location, startTime, endTime, repeats);
@@ -1201,7 +1313,7 @@ public class Driver {
     private static void editClass() {
         Scanner kb = new Scanner(System.in);
         StringTokenizer tokenizer;
-        int command;
+        int command, day;
         String prompt;
 
         while(true) {
@@ -1249,7 +1361,12 @@ public class Driver {
 
                 // Set all chosen days to repeat the class
                 while (tokenizer.hasMoreTokens()) {
-                    currentClass.getRepeats()[Integer.parseInt(tokenizer.nextToken()) - 1] = 1;
+                    day = Integer.parseInt(tokenizer.nextToken()) - 1;
+                    if(day >= 0 && day < 7) {
+                        currentClass.getRepeats()[day] = 1;
+                    } else {
+                        System.out.println("Day " + (day + 1)  + " is not valid, skipping...");
+                    }
                 }
             } else {
                 // Remove class from any associated objects
@@ -1357,8 +1474,11 @@ public class Driver {
 
     private static void editOffer(boolean status) {
         // Do not allow to accept/decline offer if there is no offer
-        if(!currentApplication.getOfferStatus().equals("Offer Received")) {
+        if(currentApplication.getOfferStatus().equals("No Offer")) {
             System.out.println("No offers have been received yet.");
+            return;
+        } else if(!currentApplication.getOfferStatus().equals("Offer Received")) {
+            System.out.println("Offer has already been " + currentApplication.getOfferStatus());
             return;
         } else if(status == true) {
             // set offer as accepted
@@ -1488,7 +1608,37 @@ public class Driver {
             }
         }
     }
+    
+    // Given an input time in 24 hour format, returns the column number of the availability
+    // matrix that it corresponds to.
+    private static int getTimeColumn (int time) {
+        return ((time / 100) * 4) + ((time % 100) / 15);
+    }
 
+    // Given a column number in the availability matrix, returns the 24 hour time as an int
+    private static int getColumnTime(int columnNumber) {
+        return ((columnNumber / 4) * 100) + ((columnNumber % 4) * 15);
+    }
+
+    // Checks the currentClass time  with the input availability
+    // Returns true if there are no clashes, otherwise false
+    private static boolean checkClashes(boolean[][] availability) {
+        int startTime, endTime;
+
+        startTime = getTimeColumn(currentClass.getStartTime());
+        endTime = getTimeColumn(currentClass.getEndTime());
+
+        for(int i = startTime; i < endTime; i++) {
+            for(int j = 0; j < 7; j++) {
+                if(currentClass.getRepeats()[j] == 1 && availability[i][j] == false) {
+                    System.out.println("Staff is unavailable on " + dayString(j) + " at the class' time");
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+    
     // Given an availability array, this prints out the times that the user
     // is available to the screen
     private static void printAvailability(boolean[][] availability) {
@@ -1497,20 +1647,22 @@ public class Driver {
         System.out.println("Availability");
         System.out.println("-----------------------------------\n");
         System.out.println("(Days 1-7 represent Monday - Sunday. Times are in HHMM format.)\n");
+        System.out.println("(Times listed are times that you are available.)\n");
+        System.out.println("(Times not listed are times that you are unavailable.)\n");
 
         for(int i = 0; i < FileHandler.DAYS_IN_WEEK; i++) {
             System.out.print("Day " + (i + 1) + ":");
             for(int j = 0; j < FileHandler.HOURS_IN_DAY * 4; j++) {
                 if(availability[i][j] == true) {
                     if(startTime == -1) {
-                        startTime = (j/4)*100 + (j%4)*15;
-                    } else if(j == FileHandler.HOURS_IN_DAY * 4 && startTime != -1) {
-                        endTime = (j/4)*100 + (j%4)*15;
+                        startTime = getColumnTime(j);
+                    } else if(j == FileHandler.HOURS_IN_DAY * 4 - 1 && startTime != -1) {
+                        endTime = getColumnTime(j);
                         System.out.print(" | " + formatTime(startTime) + " - " + formatTime(endTime));
                         startTime = -1;
                     }
                 } else if(startTime != -1){
-                    endTime = (j/4)*100 + (j%4)*15;
+                    endTime = getColumnTime(j);
                     System.out.print(" | " + formatTime(startTime) + " - " + formatTime(endTime));
                     startTime = -1;
                 }
