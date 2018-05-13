@@ -447,9 +447,10 @@ public class Driver {
         while(COSelectCourse()) {
             while(selectPosition()) {
                 while(selectPositionApplication()) {
+                    /*
                     requestSent = false;
 
-                    // Check if currentCO has already sent a request for the current position
+                    // Check if currentCO has already sent a request for the current position application
                     for(int i = 0; i < currentCO.getApplicationApprovalRequests().size(); i++) {
                         if(currentCO.getApplicationApprovalRequests().get(i).getApplicationID().equals(currentApplication.getApplicationID())) {
                             requestSent = true;
@@ -468,6 +469,8 @@ public class Driver {
                                                currentApplication.getApprovalStatus() + ".");
                         }
                     }
+                    */
+                    addApplicationApprovalRequest();
                 }
             }
         }    
@@ -1405,22 +1408,47 @@ public class Driver {
         System.out.println("\nSuccessfully created a request for a new position.\n");
     }
 
-    private static boolean addApplicationApprovalRequest() {
+    private static void addApplicationApprovalRequest() {
+        int command;
+        boolean requestSent = false;
         String prompt;
         ApplicationApprovalRequest newRequest = new ApplicationApprovalRequest(currentApplication.getPosition().getID(),
                                                 currentApplication.getApplicationID(), "Pending", currentCO);
 
-        prompt = "Are you sure you want to make a request to approve this application (0 for yes, 1 for no)? ";
-        if(getCommand(prompt, 0, 1) == 1) {
-            return false;
+        System.out.println("1. Create a request to approve this application.");
+        System.out.println("2. Decline this application.");
+        System.out.println("0. Return.");
+        prompt = "Select an option (0-2):";
+
+        command = getCommand(prompt, 0, 2);
+            
+        // Check if currentCO has already sent a request for the current position application
+        for(int i = 0; i < currentCO.getApplicationApprovalRequests().size(); i++) {
+            if(currentCO.getApplicationApprovalRequests().get(i).getApplicationID().equals(currentApplication.getApplicationID())) {
+                requestSent = true;
+            }
         }
 
-        // Add request to approve an application to associated objects
-        currentCO.getApplicationApprovalRequests().add(newRequest);
-        applicationApprovalRequests.add(newRequest);
+        if((command == 1 || command == 2) && requestSent) {
+            System.out.println("Unable to make changes, application has already been " + 
+                                   currentApplication.getApprovalStatus() + ".");
+        } else if ((command == 1 || command == 2) && !currentApplication.getApprovalStatus().equals("Pending")) {
+            System.out.println("Unable to make changes, application has already been " + 
+                                   currentApplication.getApprovalStatus() + ".");
+            return;
+        } else if(command == 1) {
+            if(requestSent) {
+                System.out.println("Unable to make changes, a request has already been sent.");
+                return;
+            }
+            // Add request to approve an application to associated objects
+            currentCO.getApplicationApprovalRequests().add(newRequest);
+            applicationApprovalRequests.add(newRequest);
 
-        System.out.println("Request for approving the application has been sent.");
-        return true;
+            System.out.println("Request for approving the application has been created.");
+        } else if(command == 2) {
+            currentApplication.setApprovalStatus("Denied");
+        }
     }
 
     private static void submitApplication() {
